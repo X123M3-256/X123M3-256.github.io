@@ -1,22 +1,24 @@
 body 
 {
 font-family:'lucida-console','monospace';
-background-color:#000000
-}
-
-h2
-{
-display:inline
-}
-
-p,h1,h2 
-{
+background-color:#000000;
 color:#00FF00
+}
+
+table
+{
+color:#000000;
+background-color:#AAAAAA;
+}
+
+thead
+{
+background-color:#888888;
 }
 
 a:visited
 {
-color:#00FF00
+color:#0000FF
 }
 
 div.appdesc{
