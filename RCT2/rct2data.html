@@ -61,7 +61,7 @@
 
 <p>Bytes 8-10 are unknown.</p>
 
-<p>Byte 11 gives information on the riders. Bit 0x80 is set if riders ride in pairs, i.e. one sprite is provided per two riders. The low order nybble gives the number of riders per car. For example, if this byte is 0x02 then there are two riders per car, represented by seperate sprites, and if it's 0x86 then there are 6 riders per car, with three sprites provided each representing two riders.</p>
+<p>Byte 11 gives information on the riders. Bit 0x80 is set if riders ride in pairs, i.e. one sprite is provided per two riders. The remaining bits give the number of riders per car. For example, if this byte is 0x02 then there are two riders per car, represented by seperate sprites, and if it's 0x86 then there are 6 riders per car, with three sprites provided each representing two riders.</p>
 
 <p>Bytes 12 and 13 are unknown, but important. Any change to byte 12 prevents the cars from rendering, and any change to byte 13 crashes the game.</p>
 
