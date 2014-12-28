@@ -9,7 +9,7 @@
 
 <p>The first eight bytes are zero for every ride in the game (I don't have any expansions, so I can't be sure about those) and don't appear to do anything, so they're probably just padding.</p>
 
-<p>Bytes 8-10 contain flags. The following table lists each flag, along with a description for those I've been able to figure out<p>
+<p>Bytes 8-10 contain flags. The following table lists each flag, along with a description for those I've been able to figure out. Bytes are specified here <em>in the order they appear in the file</em>. This is important because under x86, integers are represented in little endian order, and so if you want to represent this field with a single 32 bit integer, you need to reverse the order of the bytes given here.<p>
 <table border="1">
 <thead><tr><td>Flag</td><td>Description</td></tr></thead>
 	<tr><td>0x000001</td><td>Unknown</td></tr>
