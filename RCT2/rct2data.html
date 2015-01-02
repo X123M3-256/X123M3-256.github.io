@@ -12,23 +12,26 @@
 <p>Bytes 8-10 contain flags. The following table lists each flag, along with a description for those I've been able to figure out. Bytes are specified here <em>in the order they appear in the file</em>. This is important because under x86, integers are represented in little endian order, and so if you want to represent this field with a single 32 bit integer, you need to reverse the order of the bytes given here.<p>
 <table border="1">
 <thead><tr><td>Flag</td><td>Description</td></tr></thead>
-	<tr><td>0x000001</td><td>Unknown</td></tr>
-	<tr><td>0x000002</td><td>Unknown</td></tr>
-	<tr><td>0x000004</td><td>Unknown</td></tr>
-	<tr><td>0x000008</td><td>Unknown</td></tr>
-	<tr><td>0x000010</td><td>Unknown</td></tr>
-	<tr><td>0x000100</td><td>Riders get wet</td></tr>
-	<tr><td>0x000200</td><td>Only set on coaster boats. If unset, they do not slow down in water.</td></tr>
-	<tr><td>0x000400</td><td>Ride is covered</td></tr>
-	<tr><td>0x000800</td><td>Unknown</td></tr>
-	<tr><td>0x001000</td><td>Unknown</td></tr>
-	<tr><td>0x002000</td><td>Unknown</td></tr>
-	<tr><td>0x004000</td><td>Unknown</td></tr>
-	<tr><td>0x008000</td><td>Disallow first remap color on the track. Used mainly for trams and trains.</td></tr>
-	<tr><td>0x010000</td><td>If set, this ride shows as a seperate ride instead of an alternate train type. If the track style doesn't support alternate train types, then this flag must be set or the ride won't show at all.</td></tr>
-	<tr><td>0x020000</td><td>Unknown</td></tr>
-	<tr><td>0x080000</td><td>Unknown</td></tr>
-</table>
+	<tr><td>0x00000100</td><td>Set on spinning wild mouse</td></tr>
+	<tr><td>0x00000200</td><td>Set on inverted shuttle and inverted vertical shuttle</td></tr>
+	<tr><td>0x00000400</td><td>Unknown</td></tr>
+	<tr><td>0x00000800</td><td>Set only on sunglasses stall</td></tr>
+	<tr><td>0x00001000</td><td>Set only on magic carpet</td></tr>
+	<tr><td>0x00010000</td><td>Riders get wet</td></tr>
+	<tr><td>0x00020000</td><td>Only set on coaster boats. If unset, they do not slow down in water.</td></tr>
+	<tr><td>0x00040000</td><td>Ride is covered</td></tr>
+	<tr><td>0x00080000</td><td>Unknown</td></tr>
+	<tr><td>0x00100000</td><td>If set, this ride shows as a seperate ride instead of an alternate train type. If the track style doesn't support alternate train types, then this flag must be set or the ride won't show at all.</td></tr>
+	<tr><td>0x00200000</td><td>Set iff 0x00200000 is set. Not sure why.</td></tr>
+	<tr><td>0x00400000</td><td>Set on rowing boats, canoes and elevator</td></tr>
+	<tr><td>0x00800000</td><td>Unknown</td></tr>
+	<tr><td>0x0100000</td><td>Unknown</td></tr>
+	<tr><td>0x0200000</td><td>Unknown</td></tr>
+	<tr><td>0x0800000</td><td>Disallow remap colors on track. Used for trams and trains.</td></tr>
+	<tr><td>0x1000000</td><td>Set on magic carpet and swinging inverter ship</td></tr>
+	<tr><td>0x2000000</td><td>Set on twist and snow cups</td></tr>
+	<tr><td>0x4000000</td><td>Set on enterprise</td></tr>
+	</table>
 
 <p>Bytes 12-14 store both the track style, and (strangely) the index of the frame containing the rides preview image. Two of these bytes are always 0xFF. The byte that is <em>not</em> gives the track type, and its position gives the index of the preview image. For example, if these three bytes were 13 FF FF, this means that the track type is 0x13 (corkscrew track), and the preview image is the first image in the file. If it were FF 34 FF, then the track style is 34 (wooden track), and the preview image is the second image in the file. Of the first three images in the file, one is the preview image and the others are single pixel images that don't appear to be used for anything except filler. I'm not sure why it's done this way, which suggests I'm missing something</p>
 
@@ -70,37 +73,38 @@
 <p>Bytes 17-20 are flags. The following table lists each flag along with a description if I have one:</p>
 <table border="1">
 <thead><tr><td>Flag</td><td>Description</td></tr></thead>
-<tr><td>0x0000001</td><td>Enable remap color 2</td></tr>
-<tr><td>0x0000002</td><td>This car is swinging</td></tr>
-<tr><td>0x0000004</td><td>This car is spinning</td></tr>
-<tr><td>0x0000008</td><td> This car is powered</td></tr>
-<tr><td>0x0000010</td><td>Unknown</td></tr>
-<tr><td>0x0000020</td><td>Unknown</td></tr>
-<tr><td>0x0000040</td><td>Ride may not start unless car has passengers. I haven't actually tested this one as such rides don't appear in the coaster designer, but this flag is found in every such ride and no others, so I assume this is what it does.</td></tr>
-<tr><td>0x0000080</td><td>Unknown</td></tr>
+<tr><td>0x00000001</td><td>Enable remap color 2</td></tr>
+<tr><td>0x00000002</td><td>This car is swinging</td></tr>
+<tr><td>0x00000004</td><td>This car is spinning</td></tr>
+<tr><td>0x00000008</td><td> This car is powered</td></tr>
+<tr><td>0x00000010</td><td>Unknown</td></tr>
+<tr><td>0x00000020</td><td>Unknown</td></tr>
+<tr><td>0x00000040</td><td>Ride may not start unless car has passengers. I haven't actually tested this one as such rides don't appear in the coaster designer, but this flag is found in every such ride and no others, so I assume this is what it does.</td></tr>
+<tr><td>0x00000080</td><td>Unknown</td></tr>
 
-<tr><td>0x0000200</td><td>Unknown</td></tr>
-<tr><td>0x0000400</td><td>Unknown</td></tr>
-<tr><td>0x0000800</td><td>Car is animated</td></tr>
-<tr><td>0x0001000</td><td>Unknown</td></tr>
-<tr><td>0x0002000</td><td>Car may run inverted for extended periods. Such coasters must provide an inverted version of each car type. This is set on flying, lay down, and 4th dimension coasters.</td></tr>
+<tr><td>0x00000200</td><td>Unknown</td></tr>
+<tr><td>0x00000400</td><td>Unknown</td></tr>
+<tr><td>0x00000800</td><td></td>Set on Water Tricycles, Rowing Boats, Canoes and Swans (i.e. self powered rides). Not sure what it does</tr>
+<tr><td>0x00001000</td><td>Unknown</td></tr>
+<tr><td>0x00002000</td><td>Car may run inverted for extended periods. Such coasters must provide an inverted version of each car type. This is set on flying, lay down, and 4th dimension coasters.</td></tr>
 
-<tr><td>0x0004000</td><td>Unknown</td></tr>
-<tr><td>0x0008000</td><td>Enable remap color 3</td></tr>
-<tr><td>0x0040000</td><td>Car has no upstops -i.e negative g force will cause it to leave the track. This is set for the side friction coaster, bobsled coaster, and dingy slide.</td></tr>
+<tr><td>0x00004000</td><td>Unknown</td></tr>
+<tr><td>0x00008000</td><td>Enable remap color 3</td></tr>
+<tr><td>0x00040000</td><td>Car has no upstops -i.e negative g force will cause it to leave the track. This is set for the side friction coaster, bobsled coaster, and dingy slide.</td></tr>
 
-<tr><td>0x0010000</td><td>Unknown</td></tr>
-<tr><td>0x0020000</td><td>Unknown</td></tr>
-<tr><td>0x0040000</td><td>Unknown</td></tr>
-<tr><td>0x0080000</td><td>Unknown</td></tr>
-<tr><td>0x0200000</td><td>Unknown</td></tr>
-<tr><td>0x0400000</td><td>Set if and only if 0x002000 is set. I haven't tested what happens if you set one but not the other.</td></tr>
-<tr><td>0x0800000</td><td>Unknown</td></tr>
+<tr><td>0x00001000</td><td>Unknown</td></tr>
+<tr><td>0x00002000</td><td>Unknown</td></tr>
+<tr><td>0x00004000</td><td>Unknown</td></tr>
+<tr><td>0x00008000</td><td>Unknown</td></tr>
+<tr><td>0x00010000</td><td>Unknown</td></tr>
+<tr><td>0x00020000</td><td>Unknown</td></tr>
+<tr><td>0x00040000</td><td>Set if and only if 0x002000 is set. I haven't tested what happens if you set one but not the other.</td></tr>
+<tr><td>0x00080000</td><td>Unknown</td></tr>
 
-<tr><td>0x1000000</td><td>Unknown</td></tr>
-<tr><td>0x2000000</td><td>Unknown</td></tr>
-<tr><td>0x4000000</td><td>Unknown</td></tr>
-<tr><td>0x8000000</td><td>Unknown</td></tr>
+<tr><td>0x01000000</td><td>This car is animated</td></tr>
+<tr><td>0x02000000</td><td>Unknown</td></tr>
+<tr><td>0x04000000</td><td>Unknown</td></tr>
+<tr><td>0x08000000</td><td>Unknown</td></tr>
 </table>
 
 <p>Bytes 21-83 are unknown</p>
