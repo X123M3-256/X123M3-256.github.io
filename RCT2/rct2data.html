@@ -22,7 +22,7 @@
 	<tr><td>0x00040000</td><td>Ride is covered</td></tr>
 	<tr><td>0x00080000</td><td>Unknown</td></tr>
 	<tr><td>0x00100000</td><td>If set, this ride shows as a seperate ride instead of an alternate train type. If the track style doesn't support alternate train types, then this flag must be set or the ride won't show at all.</td></tr>
-	<tr><td>0x00200000</td><td>Set iff 0x00200000 is set. Not sure why.</td></tr>
+	<tr><td>0x00200000</td><td>Set iff 0x00100000 is set. Not sure why.</td></tr>
 	<tr><td>0x00400000</td><td>Set on rowing boats, canoes and elevator</td></tr>
 	<tr><td>0x00800000</td><td>Unknown</td></tr>
 	<tr><td>0x0100000</td><td>Unknown</td></tr>
@@ -66,7 +66,19 @@
 
 <p>Byte 11 gives information on the riders. Bit 0x80 is set if riders ride in pairs, i.e. one sprite is provided per two riders. The remaining bits give the number of riders per car. For example, if this byte is 0x02 then there are two riders per car, represented by seperate sprites, and if it's 0x86 then there are 6 riders per car, with three sprites provided each representing two riders.</p>
 
-<p>Bytes 12 and 13 are unknown, but important. Any change to byte 12 prevents the cars from rendering, and any change to byte 13 crashes the game.</p>
+<p>Bytes 12 and 13 are flags that specify what sprites this file contains. Each flag corresponds to a specific set of sprites. They appear in this table in the same order that their corresponding sprites appear in the file. This table still lacks information that I have determined. The following are known:</p>
+<table border="1">
+<thead><tr><td>Flag</td><td>Description</td></tr></thead>
+<tr><td>0x0100</td><td>Flat slopes. As far as I'm aware, this flag is set for any car that's actually used. It consists of one 32 frame rotation of the car.</td></tr>
+<tr><td>0x0200</td><td>Gentle slopes. This consists of two 4 frame rotations of the car at an angle halfway between flat and gentle, first up then down, and then two 32 frame rotations of the car angled at a gentle slope, first up then down.</td></tr>
+<tr><td>0x0400</td><td></td>Steep slopes. This consists of two 4 frame rotations of the car at an angle halfway between gentle and steep, first up then down, and then two 32 frame rotations of the car angled at a steep slope, first up then down</tr>
+<tr><td>0x0800</td><td>Vertical slopes. As for gentle and steep slopes, these consist of two 4 frame rotations at a halfway angle, up and down, then two 32 frame rotations of the car angled at a vertical slope, up and then down. However, this flag <em>also</em> includes a set of sprites user for loops/quarter-loops. These consist of 5 sets of two 4 frame rotations- each up and then down, with the angle increasing by PI/12 each time to form a smooth transition between vertical and inverted. There is then a 4 frame rotation of the car inverted.</td></tr>
+<tr><td>0x0001</td><td>Diagonal bank transitions.</td></tr>
+<tr><td>0x0002</td><td>Sloped bank transitions.</td></tr>
+<tr><td>0x0004</td><td>Sloped, banked turns</td></tr>
+<tr><td>0x0008</td><td>Banked slope transitions</td></tr>
+</table>
+
 
 <p>Bytes 14-18 are unknown</p>
 
@@ -113,7 +125,7 @@
 
 <p>Bytes 85 and 86 are applicable only for spinning rides. When a spinning ride encounters a turn, its rotation is altered by an amount based on the radius of the turn (and possibly other factors). Byte 85 can be thought of as the "inertia"- a higher value results in a smaller change in angular velocity for the same turn radius. Byte 86 is the friction: a higher value will cause the spin to slow down faster.</p>
 
-<p>Byte 90 affects draw order: Higher values cause the track to be drawn first, while low values cause the car to be drawn first. 0-2 is typical for an inverted ride, while 6-8 is typical for an above-track coaster.</p>
+<p>Byte 95 affects draw order: Higher values cause the track to be drawn first, while low values cause the car to be drawn first. 0-2 is typical for an inverted ride, while 6-8 is typical for an above-track coaster.</p>
 
 <p>For powered rides, byte 91 is the maximum velocity that the car will reach on level track</p>
 
