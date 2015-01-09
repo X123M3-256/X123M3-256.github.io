@@ -39,7 +39,9 @@
 
 <p>Byte 17 is 0xFF for tracked rides. For flat rides it's the number of "cars". For most flat rides, this value is 1, and each frame of the animation shows the entire ride; but for some (such as the flying saucers), the data file contains animation data for a single car, and the rest of the ride is hardcoded.</p>
 
-<p>Bytes 18-19 are unknown</p>
+<p>Byte 18 is the number of zero cars. It is the difference between the number of cars in the train and the train length displayed in game</p>
+
+<p>Byte 19 is the index of the car to display on the car icon in the ride editor window (See next paragraph)</p>
 
 <p>Bytes 20-24 provide information on the makeup of the train. Each ride can have up to 3 (or possibly 4, but no default ride has this many) different car types. For example, the corkscrew coaster has a different front car with a sloped nose, and a back car which is just an extra set of wheels and carries no passengers. Another example of a ride using different car types is the mine train ride. An interesting special case is the flying and multi-dimension coasters. The second car type is just the first, but inverted. When the track switches from lie to fly or vice versa, the sprites are changed. Note that these car types are <em>NOT</em> the same as rides which provide multiple train types, like the wild mouse or suspended swinging coaster- each of these is a seperate .DAT file. The following is a description of each byte from 20-24.</p>
 <ul>
@@ -54,15 +56,17 @@
 
 <h2> The car structures</h2>
 
-<p>Following this are a series of 3 structures, each 101 bytes long, pertaining to each of the car types, respectively. These structures are zeroed out if not used. There is space for a fourth, but no default ride uses it and I can't find out what happens if you try and use it because my application isn't sophisticated enough to do that yet. Each of these structures has the same format, and while describing it I'll use offsets from the start of the structure.</p>
+<p>Following this are a series of 4 structures, each 101 bytes long, pertaining to each of the car types, respectively. These structures are zeroed out if not used. Each of these structures has the same format, and while describing it I'll use offsets from the start of the structure.</p>
 
 <p>Byte 0 relates to the train rotation animation displayed in the editor window when the train tab is selected. For spinning rides, this is also used for the spinning animation. It is the highest sprite index to use before the animation loops. For most cars, this is either 31 or 15, but cars possessing rotational symmetry (such as the Virginia Reel) may loop earlier- I don't fully understand the animation sequence for these.</p>
 
-<p>Bytes 1-5 are unknown.</p>
+<p>Bytes 1-4 are unknown.</p>
 
-<p>Bytes 6 and 7 give the spacing between the car and the next. Although this usually takes quite a small value (between 3 and 8 is typical), the game will accept values in excess of 100</p>
+<p>Bytes 5 and 6 give the spacing between this car and the next. The value in this field measured in feet, but multiplied by 10 in order to represent it as an integer.</p>
 
-<p>Bytes 8-10 are unknown.</p>
+<p>Bytes 8 and 9 give the car friction. A higher value means less friction, and a value of zero will crash the game. Setting a very high value appears to limit the length of the train, not sure why.</p>
+
+<p>Byte 10 is apparently padding</p>
 
 <p>Byte 11 gives information on the riders. Bit 0x80 is set if riders ride in pairs, i.e. one sprite is provided per two riders. The remaining bits give the number of riders per car. For example, if this byte is 0x02 then there are two riders per car, represented by seperate sprites, and if it's 0x86 then there are 6 riders per car, with three sprites provided each representing two riders.</p>
 
@@ -133,7 +137,7 @@
 
 <h2>The remaining data</h2>
 
-<p>After these 3 (Or 4, I don't really know) structures, there's more fields. These refer to the ride as a whole, not individual car types, and begin at offset 434 from the start of the object header.</p>
+<p>After these 4 structures, there's more fields. These refer to the ride as a whole, not individual car types, and begin at offset 434 from the start of the object header.</p>
 
 <p>Bytes 434-436 affect the ride statistics: higher values increase the Excitement, Intensity, and Nausea respectively. Values above 0x50 are rejected by the game and will cause the ride not to appear in the ride window. These figures only <em>alter</em> the ride statistics- each track type has a hardcoded base value, but these allow you to tweak it somewhat.</p>
 
