@@ -60,13 +60,13 @@
 
 <p>Byte 0 relates to the train rotation animation displayed in the editor window when the train tab is selected. For spinning rides, this is also used for the spinning animation. It is the highest sprite index to use before the animation loops. For most cars, this is either 31 or 15, but cars possessing rotational symmetry (such as the Virginia Reel) may loop earlier- I don't fully understand the animation sequence for these.</p>
 
-<p>Bytes 1-4 are unknown.</p>
+<p>Bytes 4 is unknown.</p>
 
 <p>Bytes 5 and 6 give the spacing between this car and the next. The value in this field measured in feet, but multiplied by 10 in order to represent it as an integer.</p>
 
 <p>Bytes 8 and 9 give the car friction. A higher value means less friction, and a value of zero will crash the game. Setting a very high value appears to limit the length of the train, not sure why.</p>
 
-<p>Byte 10 is apparently padding</p>
+<p>Byte 10 is unknown</p>
 
 <p>Byte 11 gives information on the riders. Bit 0x80 is set if riders ride in pairs, i.e. one sprite is provided per two riders. The remaining bits give the number of riders per car. For example, if this byte is 0x02 then there are two riders per car, represented by seperate sprites, and if it's 0x86 then there are 6 riders per car, with three sprites provided each representing two riders.</p>
 
@@ -84,7 +84,7 @@
 </table>
 
 
-<p>Bytes 14-18 are unknown</p>
+<p>Bytes 14-16 are unknown</p>
 
 <p>Bytes 17-20 are flags. The following table lists each flag along with a description if I have one:</p>
 <table border="1">
@@ -123,17 +123,19 @@
 <tr><td>0x08000000</td><td>Unknown</td></tr>
 </table>
 
-<p>Bytes 21-83 are unknown</p>
+<p>Byte 21 is unknown</p>
 
 <p>Byte 84 gives the number of rider sprites for this car type. This is equal to the number of riders if riders do not ride in pairs, else it is half the number of riders.</p>
 
 <p>Bytes 85 and 86 are applicable only for spinning rides. When a spinning ride encounters a turn, its rotation is altered by an amount based on the radius of the turn (and possibly other factors). Byte 85 can be thought of as the "inertia"- a higher value results in a smaller change in angular velocity for the same turn radius. Byte 86 is the friction: a higher value will cause the spin to slow down faster.</p>
 
+<p>Bytes 87-90 are unknown</p>
+
 <p>Byte 95 affects draw order: Higher values cause the track to be drawn first, while low values cause the car to be drawn first. 0-2 is typical for an inverted ride, while 6-8 is typical for an above-track coaster.</p>
 
-<p>For powered rides, byte 91 is the maximum velocity that the car will reach on level track</p>
+<p>Byte 96 is "special frames". Set only for the water trikes, 4D coaster, and submarine. It gives the number of frames per angle of the car. Not fully understood</p>
 
-<p>Bytes 92-100 are unknown</p>
+<p>For powered rides, bytes 91 and 92 determine the velocity that the car will reach on level track</p>
 
 <h2>The remaining data</h2>
 
