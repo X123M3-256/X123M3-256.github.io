@@ -76,7 +76,7 @@
 <tr><td>0x0100</td><td>Flat slopes. As far as I'm aware, this flag is set for any car that's actually used. It consists of one 32 frame rotation of the car.</td></tr>
 <tr><td>0x0200</td><td>Gentle slopes. This consists of two 4 frame rotations of the car at an angle halfway between flat and gentle, first up then down, and then two 32 frame rotations of the car angled at a gentle slope, first up then down.</td></tr>
 <tr><td>0x0400</td><td>Steep slopes. This consists of two 4 frame rotations of the car at an angle halfway between gentle and steep, first up then down, and then two 32 frame rotations of the car angled at a steep slope, first up then down</td></tr>
-<tr><td>0x0800</td><td>Vertical slopes. As for gentle and steep slopes, these consist of two 4 frame rotations at a halfway angle, up and down, then two 32 frame rotations of the car angled at a vertical slope, up and then down. However, this flag <em>also</em> includes a set of sprites user for loops/quarter-loops. These consist of 5 sets of two 4 frame rotations- each up and then down, with the angle increasing by PI/12 each time to form a smooth transition between vertical and inverted. There is then a 4 frame rotation of the car inverted.</td></tr>
+<tr><td>0x0800</td><td>Vertical slopes. As for gentle and steep slopes, these consist of two 4 frame rotations at a halfway angle, up and down, then two 32 frame rotations of the car angled at a vertical slope, up and then down. However, this flag <em>also</em> includes a set of sprites used for loops/quarter-loops. These consist of 5 sets of two 4 frame rotations- each up and then down, with the angle increasing by PI/12 each time to form a smooth transition between vertical and inverted. There is then a 4 frame rotation of the car inverted.</td></tr>
 
 <tr><td>0x1000</td><td>Diagonal slopes. 4 frame rotations of the following:
 						<ul>
@@ -95,7 +95,7 @@
 <tr><td>0x0002</td><td>Sloped bank transitions. Used when the train is transitioning from unbanked to banked-or vice versa, on sloped track. Consists of four 4 frame rotations of the car banked halfway, at a gentle slope- up and left,up and right,down and left then down and right.</td></tr>
 <tr><td>0x0004</td><td>Sloped, banked turns. 4 32 frame rotations of the train banked fully and angled at a gentle slope- up and left, up and right,down and left then down and right.</td></tr>
 <tr><td>0x0008</td><td>Banked slope transitions. Used when the train is transitioning from flat to sloped while banked. Consists of four 4 frame rotations of the train at an angle halfway between flat and gentle, and banked fully- up and left, up and right, down and left then down and right.</td></tr>
-<tr><td>0x0020</td><td>Restraint animation. Restraint animations consist of four frames, with a four frame rotation of each.</td></tr>
+<tr><td>0x0020</td><td>Restraint animation. Restraint animations consist of three frames, with a four frame rotation of each.</td></tr>
 
 </table>
 
