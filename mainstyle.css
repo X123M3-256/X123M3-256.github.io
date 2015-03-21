@@ -21,12 +21,16 @@ a:visited
 color:#0000FF
 }
 
-div.appdesc{
-position:absolute;
-width:350;
+div
+{
 border-style:dashed;
 border-width:1px;
 border-color:#00FF00
+}
+
+div.appdesc{
+position:absolute;
+width:350;
 }
 
 div.appdesc>img
