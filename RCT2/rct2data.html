@@ -141,15 +141,19 @@
 
 <p>Byte 21 is unknown</p>
 
+<p>Bytes 24-79 are 4 byte offsets to images for the ride. I'm not really sure <i>which</i> images, apparently each corresponds to a different track piece. This data is populated by the loader and can be left blank</p>
+
 <p>Byte 84 gives the number of rider sprites for this car type. This is equal to the number of riders if riders do not ride in pairs, else it is half the number of riders.</p>
 
 <p>Bytes 85 and 86 are applicable only for spinning rides. When a spinning ride encounters a turn, its rotation is altered by an amount based on the radius of the turn (and possibly other factors). Byte 85 can be thought of as the "inertia"- a higher value results in a smaller change in angular velocity for the same turn radius. Byte 86 is the friction: a higher value will cause the spin to slow down faster.</p>
 
-<p>Bytes 87-90 are unknown</p>
+<p>Bytes 80-83 store the total number of images (not sure if this is for the car or in total). This is populated by the loader, no need to write it</p>
 
 <p>Byte 95 affects draw order: Higher values cause the track to be drawn first, while low values cause the car to be drawn first. 0-2 is typical for an inverted ride, while 6-8 is typical for an above-track coaster.</p>
 
 <p>Byte 96 is "special frames". Set only for the water trikes, 4D coaster, and submarine. It gives the number of frames per angle of the car. Not fully understood</p>
+
+<p>Bytes 97-100 has to do with the position the peeps sit in. This is also populated by the loader; not sure precisely what it does</p>
 
 <p>For powered rides, bytes 91 and 92 determine the velocity that the car will reach on level track</p>
 
