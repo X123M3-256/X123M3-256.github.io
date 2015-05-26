@@ -185,11 +185,44 @@ precedence=[0,0,1,1,2,2,0,0];
 return operands[0];
 }
 
+function StripZeroTerms(expr)
+{
+	if(expr.type==2)
+	{
+		if(expr.left.type==0&&expr.left.value=="0")return StripZeroTerms(expr.right);
+		else if(expr.right.type==0&&expr.right.value=="0")return StripZeroTerms(expr.left);
+	}
+	if(expr.type==3&&expr.right.type==0&&expr.right.value=="0")return StripZeroTerms(expr.left);
+	if(expr.type==4&&(expr.left.type==0&&expr.left.value=="0"||expr.right.type==0&&expr.right.value=="0"))return new ExpressionConstant(0);
+	
+	if(expr.type==2||expr.type==3||expr.type==4||expr.type==5)return new ExpressionOperator(expr.type,StripZeroTerms(expr.left),StripZeroTerms(expr.right));
+return expr;
+}
+
+function StripUnitCoefficients(expr)
+{
+	if(expr.type==4)
+	{
+		if(expr.left.type==0&&expr.left.value=="1")return StripUnitCoefficients(expr.right);
+		else if(expr.right.type==0&&expr.right.value=="1")return StripUnitCoefficients(expr.left);
+	}
+	if(expr.type==2||expr.type==3||expr.type==4||expr.type==5)return new ExpressionOperator(expr.type,StripUnitCoefficients(expr.left),StripUnitCoefficients(expr.right));
+return expr;
+}
+
+
 function DoDifferentiation()
 {
 var expr=document.forms[0].exprinput.value;
 var v=document.forms[0].varinput.value;
 alert(ExpressionPrint(ExpressionDifferentiate(ShuntingYard(Tokenize(expr)),v)));
+}
+
+function DoDifferentiationWithSimplify()
+{
+var expr=document.forms[0].exprinput.value;
+var v=document.forms[0].varinput.value;
+alert(ExpressionPrint(StripUnitCoefficients(StripZeroTerms(ExpressionDifferentiate(ShuntingYard(Tokenize(expr)),v)))));
 }
 
 </script>
@@ -201,7 +234,8 @@ alert(ExpressionPrint(ExpressionDifferentiate(ShuntingYard(Tokenize(expr)),v)));
 <input name="exprinput" type="text"></input>
 <label for="varinput">with respect to</label>
 <input name="varinput" type="text"></input>
-<input type="button" onclick="DoDifferentiation()" value="Go"></input>
+<input type="button" onclick="DoDifferentiation()" value="Differentiate without simplifying"></input>
+<input type="button" onclick="DoDifferentiationWithSimplify()" value="Differentiate and simplify"></input>
 </form>
 </body>
 </html>
