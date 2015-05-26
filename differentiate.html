@@ -1,0 +1,193 @@
+<html>
+<head>
+<script>
+
+function ExpressionConstant(value)
+{
+this.type=0;
+this.value=value;
+}
+
+function ExpressionVariable(name)
+{
+this.type=1;
+this.name=name;
+}
+
+function ExpressionOperator(type,left,right)
+{
+this.type=type;
+this.left=left;
+this.right=right;
+}
+
+function ExpressionPrint(expr)
+{
+	switch(expr.type)
+	{
+	case 0:
+	return expr.value;
+	break;
+	case 1:
+	return expr.name;
+	break;
+	case 2:
+	return "("+ExpressionPrint(expr.left)+"+"+ExpressionPrint(expr.right)+")";	
+	break;
+	case 3:
+	return "("+ExpressionPrint(expr.left)+"-"+ExpressionPrint(expr.right)+")";	
+	break;
+	case 4:
+	return "("+ExpressionPrint(expr.left)+"*"+ExpressionPrint(expr.right)+")";	
+	break;
+	case 5:
+	return "("+ExpressionPrint(expr.left)+"/"+ExpressionPrint(expr.right)+")";	
+	break;
+	}
+}
+
+function ExpressionDifferentiate(expr,v)
+{
+	switch(expr.type)
+	{
+	case 0:
+	return new ExpressionConstant(0);
+	break;
+	case 1:
+		if(expr.name==v)return new ExpressionConstant(1);
+		else return new ExpressionConstant(0);
+	break;
+	case 2:
+	return new ExpressionOperator(2,ExpressionDifferentiate(expr.left,v),ExpressionDifferentiate(expr.right,v));
+	break;
+	case 3:
+	return new ExpressionOperator(3,ExpressionDifferentiate(expr.left,v),ExpressionDifferentiate(expr.right,v));
+	break;
+	case 4:
+	return new ExpressionOperator(2,new ExpressionOperator(4,ExpressionDifferentiate(expr.left,v),expr.right),new ExpressionOperator(4,expr.left,ExpressionDifferentiate(expr.right,v)));	
+	break;
+	case 5:
+	break;
+	}
+}
+function Token(type,value)
+{
+this.type=type;
+this.value=value;
+}
+
+function Tokenize(str)
+{
+tokens=[];
+cur_type=-1;
+cur_str="";
+	for(i=0;i<str.length;i++)
+	{
+	type=-1;
+		switch(str[i])
+		{
+		case '0':
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+		type=0;
+		break;
+		case '+':
+		type=2;
+		break;
+		case '-':
+		type=3;
+		break;
+		case '*':
+		type=4;
+		break;
+		case '/':
+		type=5;
+		break;
+		case '(':
+		type=6;
+		break;
+		case ')':
+		type=7;
+		break;
+		default:
+		type=1;
+		break;
+		}
+		if(i==0)cur_type=type;
+		
+		if(cur_type!=type)
+		{
+		tokens.push(new Token(cur_type,cur_str));
+		cur_type=type;
+		cur_str="";
+		}
+	cur_str=cur_str+str[i];
+	}
+	if(cur_str!="")tokens.push(new Token(cur_type,cur_str));
+return tokens;
+}
+
+function ShuntingYard(tokens)
+{
+operands=[];
+operators=[];
+precedence=[0,0,0,0,1,1];
+	for(i=0;i<tokens.length;i++)
+	{
+		switch(tokens[i].type)
+		{
+		case 0:
+		operands.push(new ExpressionConstant(tokens[i].value));
+		break;
+		case 1:
+		operands.push(new ExpressionVariable(tokens[i].value));
+		break;
+		case 2:
+		case 3:
+		case 4:
+		case 5:
+			while(operators.length>0&&precedence[operators[operators.length-1].type]>=precedence[tokens[i].type])
+			{
+			right=operands.pop();
+			left=operands.pop();
+			operands.push(new ExpressionOperator(operators.pop().type,left,right));
+			}
+		operators.push(tokens[i]);
+		break;
+		}
+	}
+	while(operators.length>0)
+	{
+	right=operands.pop();
+	left=operands.pop();
+	operands.push(new ExpressionOperator(operators.pop().type,left,right));
+	}
+return operands[0];
+}
+
+function DoDifferentiation()
+{
+var expr=document.forms[0].exprinput.value;
+var v=document.forms[0].varinput.value;
+alert(ExpressionPrint(ExpressionDifferentiate(ShuntingYard(Tokenize(expr)),v)));
+}
+
+</script>
+</head>
+<body>
+<form>
+<label for="exprinput">Differentiate</label>
+<input name="exprinput" type="text"></input>
+<label for="varinput">with respect to</label>
+<input name="varinput" type="text"></input>
+<input type="button" onclick="DoDifferentiation()" value="Go"></input>
+</form>
+</body>
+</html>
