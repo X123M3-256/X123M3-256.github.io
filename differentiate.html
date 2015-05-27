@@ -2,15 +2,17 @@
 <head>
 <script>
 
+var types={CONSTANT:0,VARIABLE:1,ADD:2,SUBTRACT:3,MULTIPLY:4,DIVIDE:5,OPEN_PAREN:6,CLOSE_PAREN:7}
+
 function ExpressionConstant(value)
 {
-this.type=0;
+this.type=types.CONSTANT;
 this.value=value;
 }
 
 function ExpressionVariable(name)
 {
-this.type=1;
+this.type=types.VARIABLE;
 this.name=name;
 }
 
@@ -25,22 +27,22 @@ function ExpressionPrint(expr)
 {
 	switch(expr.type)
 	{
-	case 0:
+	case types.CONSTANT:
 	return expr.value;
 	break;
-	case 1:
+	case types.VARIABLE:
 	return expr.name;
 	break;
-	case 2:
+	case types.ADD:
 	return "("+ExpressionPrint(expr.left)+"+"+ExpressionPrint(expr.right)+")";	
 	break;
-	case 3:
+	case types.SUBTRACT:
 	return "("+ExpressionPrint(expr.left)+"-"+ExpressionPrint(expr.right)+")";	
 	break;
-	case 4:
+	case types.MULTIPLY:
 	return "("+ExpressionPrint(expr.left)+"*"+ExpressionPrint(expr.right)+")";	
 	break;
-	case 5:
+	case types.DIVIDE:
 	return "("+ExpressionPrint(expr.left)+"/"+ExpressionPrint(expr.right)+")";	
 	break;
 	}
@@ -50,24 +52,24 @@ function ExpressionDifferentiate(expr,v)
 {
 	switch(expr.type)
 	{
-	case 0:
+	case types.CONSTANT:
 	return new ExpressionConstant(0);
 	break;
-	case 1:
+	case types.VARIABLE:
 		if(expr.name==v)return new ExpressionConstant(1);
 		else return new ExpressionConstant(0);
 	break;
-	case 2:
-	return new ExpressionOperator(2,ExpressionDifferentiate(expr.left,v),ExpressionDifferentiate(expr.right,v));
+	case types.ADD:
+	return new ExpressionOperator(types.ADD,ExpressionDifferentiate(expr.left,v),ExpressionDifferentiate(expr.right,v));
 	break;
-	case 3:
-	return new ExpressionOperator(3,ExpressionDifferentiate(expr.left,v),ExpressionDifferentiate(expr.right,v));
+	case types.SUBTRACT:
+	return new ExpressionOperator(types.SUBTRACT,ExpressionDifferentiate(expr.left,v),ExpressionDifferentiate(expr.right,v));
 	break;
-	case 4:
-	return new ExpressionOperator(2,new ExpressionOperator(4,ExpressionDifferentiate(expr.left,v),expr.right),new ExpressionOperator(4,expr.left,ExpressionDifferentiate(expr.right,v)));	
+	case types.MULTIPLY:
+	return new ExpressionOperator(types.ADD,new ExpressionOperator(types.MULTIPLY,ExpressionDifferentiate(expr.left,v),expr.right),new ExpressionOperator(types.MULTIPLY,expr.left,ExpressionDifferentiate(expr.right,v)));	
 	break;
-	case 5:
-	return new ExpressionOperator(5,new ExpressionOperator(3,new ExpressionOperator(4,ExpressionDifferentiate(expr.left,v),expr.right),new ExpressionOperator(4,expr.left,ExpressionDifferentiate(expr.right,v))),new ExpressionOperator(4,expr.right,expr.right));
+	case types.DIVIDE:
+	return new ExpressionOperator(types.DIVIDE,new ExpressionOperator(types.SUBTRACT,new ExpressionOperator(types.MULTIPLY,ExpressionDifferentiate(expr.left,v),expr.right),new ExpressionOperator(types.MULTIPLY,expr.left,ExpressionDifferentiate(expr.right,v))),new ExpressionOperator(types.MULTIPLY,expr.right,expr.right));
 	break;
 	}
 }
@@ -97,28 +99,28 @@ cur_str="";
 		case '7':
 		case '8':
 		case '9':
-		type=0;
+		type=types.CONSTANT;
 		break;
 		case '+':
-		type=2;
+		type=types.ADD;
 		break;
 		case '-':
-		type=3;
+		type=types.SUBTRACT;
 		break;
 		case '*':
-		type=4;
+		type=types.MULTIPLY;
 		break;
 		case '/':
-		type=5;
+		type=types.DIVIDE;
 		break;
 		case '(':
-		type=6;
+		type=types.OPEN_PAREN;
 		break;
 		case ')':
-		type=7;
+		type=types.CLOSE_PAREN;
 		break;
 		default:
-		type=1;
+		type=types.VARIABLE;
 		break;
 		}
 		if(i==0)cur_type=type;
@@ -144,16 +146,16 @@ precedence=[0,0,1,1,2,2,0,0];
 	{
 		switch(tokens[i].type)
 		{
-		case 0:
+		case types.CONSTANT:
 		operands.push(new ExpressionConstant(tokens[i].value));
 		break;
-		case 1:
+		case types.VARIABLE:
 		operands.push(new ExpressionVariable(tokens[i].value));
 		break;
-		case 2:
-		case 3:
-		case 4:
-		case 5:
+		case types.ADD:
+		case types.SUBTRACT:
+		case types.MULTIPLY:
+		case types.DIVIDE:
 			while(operators.length>0&&precedence[operators[operators.length-1].type]>=precedence[tokens[i].type])
 			{
 			right=operands.pop();
@@ -162,11 +164,11 @@ precedence=[0,0,1,1,2,2,0,0];
 			}
 		operators.push(tokens[i]);
 		break;
-		case 6:
+		case types.OPEN_PAREN:
 		operators.push(tokens[i]);
 		break;
-		case 7:
-			while(operators[operators.length-1].type!=6)
+		case types.CLOSE_PAREN:
+			while(operators[operators.length-1].type!=types.OPEN_PAREN)
 			{
 			right=operands.pop();
 			left=operands.pop();
@@ -187,26 +189,26 @@ return operands[0];
 
 function StripZeroTerms(expr)
 {
-	if(expr.type==2)
+	if(expr.type==types.ADD)
 	{
-		if(expr.left.type==0&&expr.left.value=="0")return StripZeroTerms(expr.right);
-		else if(expr.right.type==0&&expr.right.value=="0")return StripZeroTerms(expr.left);
+		if(expr.left.type==types.CONSTANT&&expr.left.value=="0")return StripZeroTerms(expr.right);
+		else if(expr.right.type==types.CONSTANT&&expr.right.value=="0")return StripZeroTerms(expr.left);
 	}
-	if(expr.type==3&&expr.right.type==0&&expr.right.value=="0")return StripZeroTerms(expr.left);
-	if(expr.type==4&&(expr.left.type==0&&expr.left.value=="0"||expr.right.type==0&&expr.right.value=="0"))return new ExpressionConstant(0);
+	if(expr.type==types.SUBTRACT&&expr.right.type==types.CONSTANT&&expr.right.value=="0")return StripZeroTerms(expr.left);
+	if(expr.type==types.MULTIPLY&&(expr.left.type==types.CONSTANT&&expr.left.value=="0"||expr.right.type==0&&expr.right.value=="0"))return new ExpressionConstant(0);
 	
-	if(expr.type==2||expr.type==3||expr.type==4||expr.type==5)return new ExpressionOperator(expr.type,StripZeroTerms(expr.left),StripZeroTerms(expr.right));
+	if(expr.type==types.ADD||expr.type==types.SUBTRACT||expr.type==types.MULTIPLY||expr.type==types.DIVIDE)return new ExpressionOperator(expr.type,StripZeroTerms(expr.left),StripZeroTerms(expr.right));
 return expr;
 }
 
 function StripUnitCoefficients(expr)
 {
-	if(expr.type==4)
+	if(expr.type==types.MULTIPLY)
 	{
-		if(expr.left.type==0&&expr.left.value=="1")return StripUnitCoefficients(expr.right);
-		else if(expr.right.type==0&&expr.right.value=="1")return StripUnitCoefficients(expr.left);
+		if(expr.left.type==types.CONSTANT&&expr.left.value=="1")return StripUnitCoefficients(expr.right);
+		else if(expr.right.type==types.CONSTANT&&expr.right.value=="1")return StripUnitCoefficients(expr.left);
 	}
-	if(expr.type==2||expr.type==3||expr.type==4||expr.type==5)return new ExpressionOperator(expr.type,StripUnitCoefficients(expr.left),StripUnitCoefficients(expr.right));
+	if(expr.type==types.ADD||expr.type==types.SUBTRACT||expr.type==types.MULTIPLY||expr.type==types.DIVIDE)return new ExpressionOperator(expr.type,StripUnitCoefficients(expr.left),StripUnitCoefficients(expr.right));
 return expr;
 }
 
