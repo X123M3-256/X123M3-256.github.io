@@ -4,32 +4,9 @@
 <link rel="stylesheet" href="customrides.css"/>
 
 <script src="item.js"></script>
-<script>
-
-var index=0;
-
-function PrevImage()
-{
-index--;
-ShowItem(index);
-}
-
-
-function NextImage()
-{
-index++;
-ShowItem(index);
-}
-
-function InitViewer()
-{
-ShowItem(0);
-}
-
-</script>
-
+<script src="viewer.js"></script>
 </head>
-<body onload="InitViewer()">
+<body onload="InitViewer(10)">
 	<div class="rctbox yellow"/>
 	<div class="title">Screenshots of Intamin Wing Coaster</div>
 	<div class="content font">
@@ -45,13 +22,15 @@ ShowItem(0);
 		<div><img src="Screenshots/intwing09.png"/></div>
 		<div><img src="Screenshots/intwing10.png"/></div>
 		</div>
-		<br/>
-		<div class="button">
-		<img src="rctprev.png" onclick="PrevImage()"/>
-		</div>
-		<div class="button">
-		<img src="rctnext.png" onclick="NextImage()"/>
-		</div>
+
+		<div class="buttons">
+			<div id="btnprev" class="button">
+				<img src="rctprev.png"/>
+			</div>
+			<div id="imagenum">Image 1 of 10</div>
+			<div id="btnnext" class="button">
+				<img src="rctnext.png"/>
+			</div>
 		</div>
 	</div>
 	</body>
