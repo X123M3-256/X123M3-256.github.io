@@ -1,0 +1,243 @@
+<html>
+<head>
+<script>
+
+var types={CONSTANT:0,VARIABLE:1,ADD:2,SUBTRACT:3,MULTIPLY:4,DIVIDE:5,OPEN_PAREN:6,CLOSE_PAREN:7}
+
+function ExpressionConstant(value)
+{
+this.type=types.CONSTANT;
+this.value=value;
+}
+
+function ExpressionVariable(name)
+{
+this.type=types.VARIABLE;
+this.name=name;
+}
+
+function ExpressionOperator(type,left,right)
+{
+this.type=type;
+this.left=left;
+this.right=right;
+}
+
+function ExpressionPrint(expr)
+{
+	switch(expr.type)
+	{
+	case types.CONSTANT:
+	return expr.value;
+	break;
+	case types.VARIABLE:
+	return expr.name;
+	break;
+	case types.ADD:
+	return "("+ExpressionPrint(expr.left)+"+"+ExpressionPrint(expr.right)+")";	
+	break;
+	case types.SUBTRACT:
+	return "("+ExpressionPrint(expr.left)+"-"+ExpressionPrint(expr.right)+")";	
+	break;
+	case types.MULTIPLY:
+	return "("+ExpressionPrint(expr.left)+"*"+ExpressionPrint(expr.right)+")";	
+	break;
+	case types.DIVIDE:
+	return "("+ExpressionPrint(expr.left)+"/"+ExpressionPrint(expr.right)+")";	
+	break;
+	}
+}
+
+function ExpressionDifferentiate(expr,v)
+{
+	switch(expr.type)
+	{
+	case types.CONSTANT:
+	return new ExpressionConstant(0);
+	break;
+	case types.VARIABLE:
+		if(expr.name==v)return new ExpressionConstant(1);
+		else return new ExpressionConstant(0);
+	break;
+	case types.ADD:
+	return new ExpressionOperator(types.ADD,ExpressionDifferentiate(expr.left,v),ExpressionDifferentiate(expr.right,v));
+	break;
+	case types.SUBTRACT:
+	return new ExpressionOperator(types.SUBTRACT,ExpressionDifferentiate(expr.left,v),ExpressionDifferentiate(expr.right,v));
+	break;
+	case types.MULTIPLY:
+	return new ExpressionOperator(types.ADD,new ExpressionOperator(types.MULTIPLY,ExpressionDifferentiate(expr.left,v),expr.right),new ExpressionOperator(types.MULTIPLY,expr.left,ExpressionDifferentiate(expr.right,v)));	
+	break;
+	case types.DIVIDE:
+	return new ExpressionOperator(types.DIVIDE,new ExpressionOperator(types.SUBTRACT,new ExpressionOperator(types.MULTIPLY,ExpressionDifferentiate(expr.left,v),expr.right),new ExpressionOperator(types.MULTIPLY,expr.left,ExpressionDifferentiate(expr.right,v))),new ExpressionOperator(types.MULTIPLY,expr.right,expr.right));
+	break;
+	}
+}
+function Token(type,value)
+{
+this.type=type;
+this.value=value;
+}
+
+function Tokenize(str)
+{
+tokens=[];
+cur_type=-1;
+cur_str="";
+	for(i=0;i<str.length;i++)
+	{
+	type=-1;
+		switch(str[i])
+		{
+		case '0':
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+		type=types.CONSTANT;
+		break;
+		case '+':
+		type=types.ADD;
+		break;
+		case '-':
+		type=types.SUBTRACT;
+		break;
+		case '*':
+		type=types.MULTIPLY;
+		break;
+		case '/':
+		type=types.DIVIDE;
+		break;
+		case '(':
+		type=types.OPEN_PAREN;
+		break;
+		case ')':
+		type=types.CLOSE_PAREN;
+		break;
+		default:
+		type=types.VARIABLE;
+		break;
+		}
+		if(i==0)cur_type=type;
+		
+		if(cur_type!=type)
+		{
+		tokens.push(new Token(cur_type,cur_str));
+		cur_type=type;
+		cur_str="";
+		}
+	cur_str=cur_str+str[i];
+	}
+	if(cur_str!="")tokens.push(new Token(cur_type,cur_str));
+return tokens;
+}
+
+function ShuntingYard(tokens)
+{
+operands=[];
+operators=[];
+precedence=[0,0,1,1,2,2,0,0];
+	for(i=0;i<tokens.length;i++)
+	{
+		switch(tokens[i].type)
+		{
+		case types.CONSTANT:
+		operands.push(new ExpressionConstant(tokens[i].value));
+		break;
+		case types.VARIABLE:
+		operands.push(new ExpressionVariable(tokens[i].value));
+		break;
+		case types.ADD:
+		case types.SUBTRACT:
+		case types.MULTIPLY:
+		case types.DIVIDE:
+			while(operators.length>0&&precedence[operators[operators.length-1].type]>=precedence[tokens[i].type])
+			{
+			right=operands.pop();
+			left=operands.pop();
+			operands.push(new ExpressionOperator(operators.pop().type,left,right));
+			}
+		operators.push(tokens[i]);
+		break;
+		case types.OPEN_PAREN:
+		operators.push(tokens[i]);
+		break;
+		case types.CLOSE_PAREN:
+			while(operators[operators.length-1].type!=types.OPEN_PAREN)
+			{
+			right=operands.pop();
+			left=operands.pop();
+			operands.push(new ExpressionOperator(operators.pop().type,left,right));
+			}
+		operators.pop();
+		break;
+		}
+	}
+	while(operators.length>0)
+	{
+	right=operands.pop();
+	left=operands.pop();
+	operands.push(new ExpressionOperator(operators.pop().type,left,right));
+	}
+return operands[0];
+}
+
+function StripZeroTerms(expr)
+{
+	if(expr.type==types.ADD)
+	{
+		if(expr.left.type==types.CONSTANT&&expr.left.value=="0")return StripZeroTerms(expr.right);
+		else if(expr.right.type==types.CONSTANT&&expr.right.value=="0")return StripZeroTerms(expr.left);
+	}
+	if(expr.type==types.SUBTRACT&&expr.right.type==types.CONSTANT&&expr.right.value=="0")return StripZeroTerms(expr.left);
+	if(expr.type==types.MULTIPLY&&(expr.left.type==types.CONSTANT&&expr.left.value=="0"||expr.right.type==0&&expr.right.value=="0"))return new ExpressionConstant(0);
+	
+	if(expr.type==types.ADD||expr.type==types.SUBTRACT||expr.type==types.MULTIPLY||expr.type==types.DIVIDE)return new ExpressionOperator(expr.type,StripZeroTerms(expr.left),StripZeroTerms(expr.right));
+return expr;
+}
+
+function StripUnitCoefficients(expr)
+{
+	if(expr.type==types.MULTIPLY)
+	{
+		if(expr.left.type==types.CONSTANT&&expr.left.value=="1")return StripUnitCoefficients(expr.right);
+		else if(expr.right.type==types.CONSTANT&&expr.right.value=="1")return StripUnitCoefficients(expr.left);
+	}
+	if(expr.type==types.ADD||expr.type==types.SUBTRACT||expr.type==types.MULTIPLY||expr.type==types.DIVIDE)return new ExpressionOperator(expr.type,StripUnitCoefficients(expr.left),StripUnitCoefficients(expr.right));
+return expr;
+}
+
+
+function DoDifferentiation()
+{
+var expr=document.forms[0].exprinput.value;
+var v=document.forms[0].varinput.value;
+alert(ExpressionPrint(ExpressionDifferentiate(ShuntingYard(Tokenize(expr)),v)));
+}
+
+function DoDifferentiationWithSimplify()
+{
+var expr=document.forms[0].exprinput.value;
+var v=document.forms[0].varinput.value;
+alert(ExpressionPrint(StripUnitCoefficients(StripZeroTerms(ExpressionDifferentiate(ShuntingYard(Tokenize(expr)),v)))));
+}
+
+</script>
+</head>
+<body>
+<p>Expressions may consist of +,-,*, and /. Variables must consist entirely of alphabetic characters, and constants must be positive integers. There's no error checking, so if the expression entered isn't valid the output will probably be garbage.</p>
+<form>
+<label for="exprinput">Differentiate</label>
+<input name="exprinput" type="text"></input>
+<label for="varinput">with respect to</label>
+<input name="varinput" type="text"></input>
+<input type="button" onclick="DoDifferentiation()" value="Differentiate without simplifying"></input>
+<input type="button" onclick="DoDifferentiationWithSimplify()" value="Differentiate and simplify"></input>
+</form>
+</body>
+</html>
