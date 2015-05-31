@@ -38,9 +38,21 @@ div.rideitem img
 	}
 
 
-div.button
+div.content > div.buttons
 	{
-	border:2px outset;
-	background-color:#000000;
+	display:block;
 	}
 
+
+div.buttons > div
+	{
+	display:inline-block;
+	vertical-align:middle;
+	padding:3px;
+	border-style:outset;
+	}
+
+.yellow div.content > div.buttons >div
+	{
+	border-color:#A76F07;
+	}
