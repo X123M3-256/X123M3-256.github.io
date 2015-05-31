@@ -1,0 +1,46 @@
+body 
+	{
+	background-image:url("background.png");
+	text-align:center;
+	}
+
+div.rctbox
+	{
+	display:inline-block;
+	margin-left:auto;
+	margin-right:auto;
+	}
+
+div.content > div
+	{
+	display:inline-block;
+	vertical-align:top;
+	margin:5px;
+	padding:5px;
+	border:2px inset;
+	border-color:#8B8BBF;
+	}
+
+.yellow div.content > div
+	{
+	border-color:#A76F07;
+	}
+
+div.rideitem 
+	{
+	width:500px;
+	text-align:left;
+	}
+
+div.rideitem img 
+	{
+	float:right
+	}
+
+
+div.button
+	{
+	border:2px outset;
+	background-color:#000000;
+	}
+
