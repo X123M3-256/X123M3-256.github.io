@@ -1,0 +1,58 @@
+<html>
+<head>
+<link rel="stylesheet" href="RCT2Windows/css/windows.css"/>
+<link rel="stylesheet" href="customrides.css"/>
+
+<script src="item.js"></script>
+<script>
+
+var index=0;
+
+function PrevImage()
+{
+index--;
+ShowItem(index);
+}
+
+
+function NextImage()
+{
+index++;
+ShowItem(index);
+}
+
+function InitViewer()
+{
+ShowItem(0);
+}
+
+</script>
+
+</head>
+<body onload="InitViewer()">
+	<div class="rctbox yellow"/>
+	<div class="title">Screenshots of Intamin Wing Coaster</div>
+	<div class="content font">
+		<div id="items">	
+		<div><img src="Screenshots/intwing00.png"/></div>
+		<div><img src="Screenshots/intwing02.png"/></div>
+		<div><img src="Screenshots/intwing03.png"/></div>
+		<div><img src="Screenshots/intwing04.png"/></div>
+		<div><img src="Screenshots/intwing05.png"/></div>
+		<div><img src="Screenshots/intwing06.png"/></div>
+		<div><img src="Screenshots/intwing07.png"/></div>
+		<div><img src="Screenshots/intwing08.png"/></div>
+		<div><img src="Screenshots/intwing09.png"/></div>
+		<div><img src="Screenshots/intwing10.png"/></div>
+		</div>
+		<br/>
+		<div class="button">
+		<img src="rctprev.png" onclick="PrevImage()"/>
+		</div>
+		<div class="button">
+		<img src="rctnext.png" onclick="NextImage()"/>
+		</div>
+		</div>
+	</div>
+	</body>
+</html>
