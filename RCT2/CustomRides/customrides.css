@@ -56,3 +56,12 @@ div.buttons > div
 	{
 	border-color:#A76F07;
 	}
+
+/*Make close button a clickable link - thanks to Trigger_Death for this*/
+a.close
+	{
+	width: 13px;
+	height: 14px;
+	position: relative;
+	float: right;
+	}
