@@ -24,6 +24,8 @@ this.container.addEventListener("mousemove",function(event)
 	curMenu.mousePrevY=event.clientY;
 	});
 
+//this.container.addEventListener("mouseleave",function(event){alert("hello");curMenu.updateDisabled=false;});
+
 this.createCallback=function(rideIndex)
 	{
 	return function()
