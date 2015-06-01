@@ -4,48 +4,14 @@
 <link rel="stylesheet" href="customrides.css"/>
 
 <script src="item.js"></script>
-
-<script>
-
-
-function createCallback(rideIndex)
-{
-return function()
-	{
-	this.style.backgroundColor="#464660";
-	ShowItem(rideIndex);
-	};
-}
-
-
-function InitMenu()
-{
-var rideList=document.getElementById("ridelist");
-var rideItems=document.getElementById("items").getElementsByTagName("div");
-	for(i=0;i<rideItems.length;i++)
-	{
-	var listItem=document.createElement("span");
-	var link=document.createElement("a");
-	link.href="DATFiles/"+rideItems[i].dataset.filename;
-	link.appendChild(document.createTextNode(rideItems[i].dataset.name));
-	listItem.appendChild(link);
-	rideList.appendChild(listItem);
-
-	listItem.addEventListener("mouseover",createCallback(i));
-	listItem.addEventListener("mouseout",function(){this.style.backgroundColor="";});
-	}
-ShowItem(0);
-}
-
-</script>
-
+<script src="menu.js"></script>
 </head>
 <body onload="InitMenu()">
 
 <div class="rctbox blue">
 	<div class="title">Custom Rides</div>
 	<div class="content font text-black">
-		<div id="ridelist" class="border">
+		<div id="ridelist">
 		</div>
 		<div id="items">
 		<div class="rideitem" data-name="Intamin Wing Coaster" data-filename="INTWING.DAT">
