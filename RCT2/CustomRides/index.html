@@ -8,23 +8,23 @@
 <script src="item.js"></script>
 <script src="menu.js"></script>
 </head>
-<body onload="">
+<body onload="InitMenu()">
 
 <div class="rctbox red">
 	<div class="title">Updates</div>
 	<div class="content font">
-	<p>I have discovered a bug that affects every ride I've released so far. The peep loading position structs weren&apos;t populated properly, which causes peeps to walk off the edge of the platform. All my ride files will need to be updated, and the updates will probably conflict with the old files, so if you&apos;ve downloaded any of my rides you should stop using them until I have finished updating the files. All download links have been temporarily commented out. They will be restored when I've updated the files, at which point you'll need to redownload any rides you have.
-	</p>
+	<p>I have discovered a bug that affects every ride I've released so far. The peep loading position structs weren&apos;t populated properly, which causes peeps to walk off the edge of the platform. There was also an issue with ParkDat not showing the names correctly; this will also be fixed. Download links for the rides that have not yet been updated have been commented out until the update is complete. The updated versions of rides are not expected to break parks created with earlier versions, because I now have an algorithm that forces the checksum to match the old file.</p>
 	</div>
 </div>
 
-<!--
+
 <div class="rctbox blue">
 	<div class="title">Custom Rides</div>
 	<div class="content font text-black">
 		<div id="ridelist">
 		</div>
 		<div id="items">
+		<!--
 		<div class="rideitem" data-name="Intamin Wing Coaster" data-filename="INTWING.DAT">
 		<a href="DATFiles/INTWING.DAT">
 			<img src="PreviewImages/intaminwingcoaster.png"></img>
@@ -44,7 +44,7 @@
 		<p>Notes: Uses fake spinning.</p>
 		<a href="DATFiles/MSSPIN.DAT">Download</a>&nbsp;<a href="msspinimages.html">Screenshots</a>
 		</div>
-		
+		-->
 		<div class="rideitem" data-name="B&M Dive Coaster (8 across cars)" data-filename="BMDIVE8.DAT">
 		<a href="DATFiles/BMDIVE8.DAT">
 			<img src="PreviewImages/bmdivecoaster8.png"></img>
@@ -55,7 +55,7 @@
 		<a href="DATFiles/BMDIVE8.DAT">Download</a>&nbsp;<a href="bmdive8images.html">Screenshots</a>
 		</div>
 
-		
+		<!--
 		<div class="rideitem" data-name="Raft Ride" data-filename="RAFTSPN0.DAT">
 		<a href="DATFiles/RAFTSPN0.DAT">
 			<img src="PreviewImages/raftride.png"></img>
@@ -116,10 +116,9 @@
 		<p>Notes: Same as above, but with the tubes that take two riders.</p>
 		<a href="DATFiles/SLDNET2.DAT">Download</a>
 		</div>
-
--->
-
-
+		-->
+		</div>
+	</div>
 </div>
 
 </body>
