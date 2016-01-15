@@ -1,0 +1,40 @@
+<html>
+<head>
+<script>
+var mouseX=0;
+var mouseY=0;
+
+samples=[[0,0],[0,0],[0,0]]
+
+function handleMouseEvent(event)
+{
+mouseX=event.clientX;
+mouseY=event.clientY;
+}
+
+function updateSamples()
+{
+samples.shift();
+samples.push([mouseX,mouseY]);
+//Compute B-A
+var x1=samples[1][0]-samples[0][0];
+var y1=samples[1][1]-samples[0][1];
+//Compute C-B
+var x2=samples[2][0]-samples[1][0];
+var y2=samples[2][1]-samples[1][1];
+//Compute z component of (B-A)x(C-B)
+var cross=x1*y2-y1*x2;
+	if(cross>0)document.body.innerHTML="Clockwise";
+	else document.body.innerHTML="Anticlockwise";
+}
+
+function init()
+{
+document.addEventListener("mousemove",handleMouseEvent);
+setInterval("updateSamples()",100);
+}
+</script>
+</head>
+<body onload="init()">
+</body>
+</html>
