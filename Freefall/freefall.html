@@ -1,0 +1,277 @@
+<html>
+	<head>
+	<style>
+	.container{
+	    display: flex;
+	}
+	.fixed{
+	    width: 510px;
+	}
+	.flex-item{
+	    flex-grow: 1;
+	}
+	</style>
+	<script>
+	var dt=1.0/10.0;
+	var screenWidth=500;
+	var screenHeight=700;
+	var scale=0.14;
+	var axisX=Math.round(screenWidth/10)+0.5;
+	var zeroX=Math.round(screenWidth/2)+0.5;
+	var ground=30;
+	var ctx;
+	function fmod(a,b){return Number((a-(Math.floor(a/b)*b)).toPrecision(8));};
+	function plotX(x){return x*scale+zeroX;};
+	function plotY(y){return -y*scale+screenHeight-ground;};
+
+	class Plot
+	{
+	constructor(color,posX,posY,update)
+		{
+		this.color=color;
+		this.x=posX;
+		this.y=posY;
+		this.coordsX=[posX];
+		this.coordsY=[posY];
+		this.updateFunc=update;
+		}
+	render()
+		{
+		ctx.beginPath();
+		ctx.moveTo(plotX(this.coordsX[0]),plotY(this.coordsY[0]));
+			for(var i=1;i<this.coordsX.length;i++)
+			{
+			ctx.lineTo(plotX(this.coordsX[i]),plotY(this.coordsY[i]));
+			}
+		ctx.lineWidth=1.5;
+		ctx.strokeStyle=this.color;
+		ctx.stroke();
+		ctx.fillStyle=this.color;
+    		ctx.beginPath();
+    		ctx.arc(plotX(this.x),plotY(this.y),4,0,2*Math.PI);
+    		ctx.fill();
+		}
+	update()
+		{
+		this.updateFunc();
+		this.coordsX.push(this.x);
+		this.coordsY.push(this.y);
+		}
+	}
+
+	class Plane extends Plot
+	{
+	constructor(color,posX,posY,groundspeed)
+		{	
+		super(color,posX,posY,function(){this.x+=this.groundspeed*dt;});
+		this.groundspeed=groundspeed;
+		}
+	}
+	
+	class Jumper extends Plot
+	{
+	constructor(color,posX,posY,airspeed,terminalVelocity,canopySinkRate,deploymentHeight,wind)
+		{
+		var updateFunc=function()
+			{
+			var windspeed=this.wind(this.y);
+			var airspeed=Math.sqrt((this.vx-windspeed)*(this.vx-windspeed)+this.vy*this.vy);			
+		
+				if(this.y<deploymentHeight&&this.deployment<1.0)
+				{
+				this.deployment+=dt/3.0;
+					if(this.deployment>1.0)this.deployment=1.0;
+				}			
+			var specificDragForce=this.getK()*airspeed*airspeed;
+			this.vx+=-dt*specificDragForce*(this.vx-windspeed)/airspeed;
+			this.vy+=dt*(-9.81-specificDragForce*this.vy/airspeed);
+			this.x+=this.vx*dt;
+			this.y+=this.vy*dt;
+			}	
+		super(color,posX,posY,updateFunc);
+		this.vx=airspeed;
+		this.vy=0;
+		this.terminalVelocity=terminalVelocity;
+		this.canopySinkRate=canopySinkRate;
+		this.wind=wind;
+		this.deployment=0;
+		}
+	getK()
+		{
+		var v=(1.0-this.deployment)*this.terminalVelocity+this.deployment*this.canopySinkRate;
+		return 9.81/(v*v);
+		};
+
+	}
+
+	class Simulation
+	{
+	constructor(exitAlt,runInAS,exitSep,tv1,cs1,da1,tv2,cs2,da2,upperWind,lowerWind)
+		{
+		this.exitSeparation=exitSep;
+		this.terminalVelocity1=tv1;
+		this.terminalVelocity2=tv2;
+		this.canopySinkRate1=cs1;
+		this.canopySinkRate2=cs2;
+		this.deploymentAltitude1=da1;
+		this.deploymentAltitude2=da2;
+		this.t=0;
+		this.plane=new Plane("#9B01C1",500,exitAlt,runInAS+upperWind);
+		this.jumper1=null;
+		this.jumper2=null;
+		this.wind=function(y)
+			{
+				if(y<304.8*4)return lowerWind;
+				else if(y<304.8*8)return lowerWind+((y-4*304.8)/(4*304.8))*(upperWind-lowerWind);
+				else return upperWind;
+			}
+		}
+	
+	render()
+		{
+		ctx.clearRect(0,0,screenWidth,screenHeight);
+		ctx.fillStyle = "#0099FF";
+		ctx.fillRect(0,0,screenWidth,screenHeight);
+		ctx.fillStyle = "#6B530A";
+		ctx.fillRect(0,screenHeight-ground,screenWidth,ground);
+	
+
+		var cloudOffsets=[3000   ,1000   ,2000     ,500    ,3000    ,1500    ,500     ,2500];
+		var cloudHeights=[304.8*4,304.8*5,304.8*6.5,304.8*8,304.8*9,304.8*10,304.8*12,304.8*13];
+			for(var i=0;i<cloudHeights.length;i++)
+			{
+			ctx.translate(plotX(fmod(cloudOffsets[i]+this.t*this.wind(cloudHeights[i]),4000)-2000),plotY(cloudHeights[i]));
+			ctx.fillStyle = "#FFFFFF";
+			ctx.beginPath();
+			ctx.arc(-20,0,10,0,2*Math.PI);
+			ctx.fill();
+			ctx.beginPath();
+			ctx.arc(0,-2,14,0,2*Math.PI);
+			ctx.fill();
+			ctx.beginPath();
+			ctx.arc(20,0,10,0,2*Math.PI);
+			ctx.fill();
+			ctx.beginPath();
+			ctx.arc(10,-7,8,0,2*Math.PI);
+			ctx.fill();
+			ctx.beginPath();
+			ctx.arc(-10,-7,8,0,2*Math.PI);
+			ctx.fill();
+			ctx.beginPath();
+			ctx.arc(11,5,7,0,2*Math.PI);
+			ctx.fill();
+			ctx.beginPath();
+			ctx.arc(-11,5,7,0,2*Math.PI);
+			ctx.fill();
+			ctx.setTransform(1,0,0,1,0,0);
+			}
+
+
+	
+		ctx.beginPath();
+		ctx.lineWidth=1;
+		ctx.strokeStyle = "#000000";
+		ctx.fillStyle = "#000000";
+		ctx.moveTo(axisX,0);
+		ctx.lineTo(axisX,screenHeight-ground);
+		ctx.stroke();
+
+		
+		ctx.beginPath();	
+		ctx.fillStyle = "#000000";
+			for(var i=1;i<=15;i++)
+			{
+			var tickHeight=Math.round(plotY(i*304.8))+0.5;
+			ctx.moveTo(axisX,tickHeight);
+			ctx.lineTo(axisX+10,tickHeight);
+			ctx.stroke();
+			ctx.fillText(i*1000+" ft",axisX+12,tickHeight+3);
+			}
+			if(this.jumper1!=null)this.jumper1.render();
+			if(this.jumper2!=null)this.jumper2.render();
+		this.plane.render();
+		}
+	update()
+		{
+			if(this.jumper1==null&&this.t>2)
+			{
+			this.jumper1=new Jumper("#FF0000",this.plane.x+this.plane.groundspeed*(this.t-2),this.plane.y,this.plane.groundspeed,this.terminalVelocity1,this.canopySinkRate1,this.deploymentAltitude1,this.wind);
+			}
+			if(this.jumper2==null&&this.t>2+this.exitSeparation)
+			{
+			this.jumper2=new Jumper("#FFFF00",this.plane.x+this.plane.groundspeed*(this.t-2-this.exitSeparation),this.plane.y,this.plane.groundspeed,this.terminalVelocity2,this.canopySinkRate2,this.deploymentAltitude2,this.wind);
+			}
+			if(this.jumper2==null||this.jumper2.deployment<1.0)
+			{
+			this.plane.update();
+			if(this.jumper1!=null)this.jumper1.update();
+			if(this.jumper2!=null)this.jumper2.update();
+			this.t+=dt;
+			}
+		}
+	
+	}
+
+	var sim=new Simulation(3048*1.35,-50,10, 72,5,3048*0.35, 54,5,3048*0.35, 15,0);
+
+	function Init()
+	{
+	ctx=document.getElementById("screen").getContext("2d");
+	setInterval("MainLoop()",1000/40);
+	RunSimulation();
+	}
+
+
+	function MainLoop()
+	{
+		if(sim!=null)
+		{
+		sim.update();
+		sim.render();
+		}	
+	}
+
+	function RunSimulation()
+	{
+	var upperWind=parseFloat(document.getElementById("upperWind").value)*0.44704;
+	var lowerWind=parseFloat(document.getElementById("lowerWind").value)*0.44704;
+	var runInAS=-parseFloat(document.getElementById("airspeed").value)*0.44704;
+	var separation=parseFloat(document.getElementById("separation").value);
+	var exitAltitude=parseFloat(document.getElementById("altitude").value)*0.3048;
+	var terminalVelocity1=parseFloat(document.getElementById("terminalVelocity1").value)*0.44704;
+	var deploymentAltitude1=parseFloat(document.getElementById("deploymentAltitude1").value)*0.3048;
+	var canopySinkRate1=parseFloat(document.getElementById("canopySinkRate1").value)*0.44704;
+	var terminalVelocity2=parseFloat(document.getElementById("terminalVelocity2").value)*0.44704;
+	var deploymentAltitude2=parseFloat(document.getElementById("deploymentAltitude2").value)*0.3048;
+	var canopySinkRate2=parseFloat(document.getElementById("canopySinkRate2").value)*0.44704;
+	sim=new Simulation(exitAltitude,runInAS,separation,terminalVelocity1,canopySinkRate1,deploymentAltitude1,terminalVelocity2,canopySinkRate2,deploymentAltitude2,upperWind,lowerWind);
+	}
+
+
+	</script>
+	</head>
+	<body onload="Init()"">
+	<div class="container">
+	<div class="fixed">
+		<canvas width="500" height="700" id="screen">
+		</canvas>
+	</div>
+	<div class="flex-item">
+	<label for="upperWind">Upper wind(mph):</label><input type="number" min="-100" max="100" value="35" id="upperWind"></input><br/>
+	<label for="lowerWind">Lower wind(mph):</label><input type="number" min="-100" max="100" value="0" id="lowerWind"></input><br/>
+	<label for="airspeed">Run in airspeed(mph):</label><input type="number" min="20" max="150" value="90" id="airspeed"></input><br/>
+	<label for="altitude">Exit altitude(ft):</label><input type="number" min="0" max="15000" value="13500" id="altitude"></input><br/>
+	<label for="separation">Exit separation(s):</label><input type="number" min="0" max="30" value="10" id="separation"></input><br/>
+	<p>Jumper 1</p>
+	<label for="terminalVelocity1">Terminal velocity(mph):</label><input type="number" min="0" max="300" value="160" class="num-input" id="terminalVelocity1"></input><br/>
+	<label for="deploymentAltitude1">Deployment altitude(ft):</label><input type="number" min="1000" max="15000" value="3500" class="num-input" id="deploymentAltitude1"></input><br/>
+	<label for="canopySinkRate1">Canopy descent rate(mph):</label><input type="number" min="1" max="50" value="15" class="num-input" id="canopySinkRate1"></input><br/>
+	<p>Jumper 2</p>
+	<label for="terminalVelocity2">Terminal velocity(mph):</label><input type="number" min="0" max="300" value="120" class="num-input" id="terminalVelocity2"></input><br/>
+	<label for="deploymentAltitude2">Deployment altitude(ft):</label><input type="number" min="1000" max="15000" value="3500" class="num-input" id="deploymentAltitude2"></input><br/>
+	<label for="canopySinkRate2">Canopy descent rate(mph):</label><input type="number" min="1" max="50" value="15" class="num-input" id="canopySinkRate2"></input><br/>
+	<button type="button" onclick="RunSimulation()">Run</button>
+	</div>
+	</div>
+	</body>
+</html>
