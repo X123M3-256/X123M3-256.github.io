@@ -255,7 +255,7 @@
 	</script>
 	</head>
 	<body onload="Init()"">
-	<h1>Freefad</h1>
+	<h1>Freefall drift simulation</h1>
 	<div class="container">
 	<div class="fixed">
 		<canvas width="500" height="700" id="screen">
@@ -275,14 +275,14 @@
 	<label for="terminalVelocity2">Terminal velocity(mph):</label><input type="number" min="0" max="300" value="120" class="num-input" id="terminalVelocity2"></input><br/>
 	<label for="deploymentAltitude2">Deployment altitude(ft):</label><input type="number" min="1000" max="15000" value="3500" class="num-input" id="deploymentAltitude2"></input><br/>
 	<label for="canopySinkRate2">Canopy descent rate(mph):</label><input type="number" min="1" max="50" value="15" class="num-input" id="canopySinkRate2"></input><br/>
-	<button type="button" onclick="RunSimulation()">Run</button>
+	<button type="button" onclick="RunSimulation()">Run simulation</button>
 	</div>
 	</div>
 	</body>
 
 Notes: The simulation makes the assumption that the drag coefficient is constant (except during deployment), and that lift forces are negligible.
 
-The atmosphere is assumed to be standard, and the values of terminal velocity specified are taken to be specified at roughly 6500ft (since the actual terminal velocity varies with air density).
+The atmosphere is assumed to be standard, and the values of terminal velocity specified are given at roughly 6500ft (since the actual terminal velocity varies with air density).
 
 It is assumed that the wind speed is equal to &quot;Lower wind&quot; below 4000ft, and &quot;Upper wind&quot; above 8000ft, and that it varies linearly in the range 4000ft-8000ft. 
 
