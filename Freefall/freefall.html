@@ -77,13 +77,12 @@
 			var pressure=101325*Math.pow(1-2.25569e-5*this.y,5.25616);
 			var temp=288.15-0.0065*this.y;
 			var density=0.00348367875*pressure/temp;
-			console.log(density);	
 			var windspeed=this.wind(this.y);
 			var airspeed=density*Math.sqrt((this.vx-windspeed)*(this.vx-windspeed)+this.vy*this.vy);			
 		
 				if(this.y<deploymentHeight&&this.deployment<1.0)
 				{
-				this.deployment+=dt/3.0;
+				this.deployment+=dt/4.0;
 					if(this.deployment>1.0)this.deployment=1.0;
 				}			
 			var specificDragForce=this.getK()*airspeed*airspeed;
@@ -286,7 +285,7 @@ The atmosphere is assumed to be standard, and the values of terminal velocity sp
 
 It is assumed that the wind speed is equal to &quot;Lower wind&quot; below 4000ft, and &quot;Upper wind&quot; above 8000ft, and that it varies linearly in the range 4000ft-8000ft. 
 
-The terminal velocity is assumed to decrease linearly during canopy deployment (a completely arbitrary assumption, but it doesn't seem to matter too much), and that deployment takes 3 seconds. The canopy is assumed to point directly off the jump run and the descent rate is taken to be constant. 
+The terminal velocity is assumed to decrease linearly during canopy deployment (a completely arbitrary assumption, but it doesn't seem to matter too much), and that deployment takes 4 seconds. The canopy is assumed to point directly off the jump run and the descent rate is taken to be constant. 
 
 The simulation is run at 4x actual speed, and stops once both canopies are fully deployed. 
 
