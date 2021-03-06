@@ -74,8 +74,12 @@
 		{
 		var updateFunc=function()
 			{
+			var pressure=101325*Math.pow(1-2.25569e-5*this.y,5.25616);
+			var temp=288.15-0.0065*this.y;
+			var density=0.00348367875*pressure/temp;
+			console.log(density);	
 			var windspeed=this.wind(this.y);
-			var airspeed=Math.sqrt((this.vx-windspeed)*(this.vx-windspeed)+this.vy*this.vy);			
+			var airspeed=density*Math.sqrt((this.vx-windspeed)*(this.vx-windspeed)+this.vy*this.vy);			
 		
 				if(this.y<deploymentHeight&&this.deployment<1.0)
 				{
@@ -116,7 +120,7 @@
 		this.deploymentAltitude1=da1;
 		this.deploymentAltitude2=da2;
 		this.t=0;
-		this.plane=new Plane("#9B01C1",500,exitAlt,runInAS+upperWind);
+		this.plane=new Plane("#9B01C1",0,exitAlt,runInAS+upperWind);
 		this.jumper1=null;
 		this.jumper2=null;
 		this.wind=function(y)
@@ -251,6 +255,7 @@
 	</script>
 	</head>
 	<body onload="Init()"">
+	<h1>Freefad</h1>
 	<div class="container">
 	<div class="fixed">
 		<canvas width="500" height="700" id="screen">
@@ -274,4 +279,20 @@
 	</div>
 	</div>
 	</body>
+
+Notes: The simulation makes the assumption that the drag coefficient is constant (except during deployment), and that lift forces are negligible.
+
+The atmosphere is assumed to be standard, and the values of terminal velocity specified are taken to be specified at roughly 6500ft (since the actual terminal velocity varies with air density).
+
+It is assumed that the wind speed is equal to &quot;Lower wind&quot; below 4000ft, and &quot;Upper wind&quot; above 8000ft, and that it varies linearly in the range 4000ft-8000ft. 
+
+The terminal velocity is assumed to decrease linearly during canopy deployment (a completely arbitrary assumption, but it doesn't seem to matter too much), and that deployment takes 3 seconds. The canopy is assumed to point directly off the jump run and the descent rate is taken to be constant. 
+
+The simulation is run at 4x actual speed, and stops once both canopies are fully deployed. 
+
+
+The numerical scheme used is a semi implicit Euler method.
+
+
+
 </html>
