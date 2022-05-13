@@ -43,7 +43,7 @@ var rideItems=document.getElementById("items").getElementsByTagName("div");
 	{
 	var listItem=document.createElement("span");
 	var link=document.createElement("a");
-	link.href="DATFiles/"+rideItems[i].dataset.filename;
+	link.href="Files/"+rideItems[i].dataset.filename;
 	link.appendChild(document.createTextNode(rideItems[i].dataset.name));
 	listItem.appendChild(link);
 	
