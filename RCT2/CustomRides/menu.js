@@ -10,6 +10,9 @@ this.mousePrevY=0;
 
 
 var curMenu=this;
+this.container.style.position="relative";
+this.container.style.width="200px";
+this.container.style.height="140px";
 this.container.addEventListener("mousemove",function(event)
 	{
 		if(curMenu.mouseInitialised)
@@ -33,7 +36,7 @@ this.createCallback=function(rideIndex)
 			if(!curMenu.updateDisabled)
 			{
 			ShowItem(rideIndex);
-			this.style.backgroundColor="#464660";
+			this.style.backgroundColor="#5b7373";
 			}
 		}
 	}
@@ -42,11 +45,21 @@ var rideItems=document.getElementById("items").getElementsByTagName("div");
 	for(i=0;i<rideItems.length;i++)
 	{
 	var listItem=document.createElement("span");
-	var link=document.createElement("a");
-	link.href="Files/"+rideItems[i].dataset.filename;
-	link.appendChild(document.createTextNode(rideItems[i].dataset.name));
-	listItem.appendChild(link);
-	
+	listItem.style.width="200px";
+	var itemName=document.createTextNode(rideItems[i].dataset.name);
+		if(rideItems[i].dataset.filename)
+		{
+		var link=document.createElement("a");
+		link.href="Files/"+rideItems[i].dataset.filename;
+		link.appendChild(itemName);
+		listItem.appendChild(link);
+		}
+		else listItem.appendChild(itemName);
+
+	listItem.style.position="absolute";
+	listItem.style.top=12*i+2+"px";
+		if(rideItems[i].dataset.offset)listItem.style.left="0.5px";
+		else listItem.style.left="0px";
 	
 	listItem.addEventListener("mouseover",this.createCallback(i));
 	listItem.addEventListener("mouseout",function(){this.style.backgroundColor="";});

@@ -11,14 +11,18 @@ div.rctbox
 	margin-right:auto;
 	}
 
-div.content > div
+div.content
+	{
+	padding:2px;
+	height:150px;
+	}
+
+div.content > div.inset
 	{
 	display:inline-block;
 	vertical-align:top;
-	margin:5px;
-	padding:5px;
-	border:2px inset;
-	border-color:#8B8BBF;
+	margin:3px;
+	position:relative;
 	}
 
 .yellow div.content > div
@@ -29,7 +33,9 @@ div.content > div
 div.rideitem 
 	{
 	width:500px;
-	text-align:left;
+	height:132px;
+	padding:4px;
+	position:relative;
 	}
 
 div.rideitem img 
@@ -52,10 +58,9 @@ div.buttons > div
 	border-style:outset;
 	}
 
-.yellow div.content > div.buttons >div
-	{
-	border-color:#A76F07;
-	}
+a {
+text-decoration:none
+}
 
 /*Make close button a clickable link - thanks to Trigger_Death for this*/
 a.close

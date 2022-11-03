@@ -88,6 +88,32 @@
 	border-right: #9FAFAF solid 1px;
 }
 
+
+.rctbox.gray {
+	border-top: #9FAFAF solid 1px;
+	border-left: #9FAFAF solid 1px;
+	border-bottom: #5B7373 solid 1px;
+	border-right: #5B7373 solid 1px;
+	background: #839797;
+}
+
+.rctbox.gray .content {
+	background: #839797;
+	color: black;
+	border-top: #9FAFAF solid 1px;
+	border-left: #9FAFAF solid 1px;
+	border-bottom: #5B7373 solid 1px;
+	border-right: #5B7373 solid 1px;
+}
+
+.rctbox.gray> div.content >.inset {
+	border-top: #5B7373 solid 2px;
+	border-left: #5B7373 solid 2px;
+	border-bottom: #9FAFAF solid 2px;
+	border-right: #9FAFAF solid 2px;
+}
+
+
 .rctbox.green {
 	border-top: #9FAFAF solid 1px;
 	border-left: #9FAFAF solid 1px;
