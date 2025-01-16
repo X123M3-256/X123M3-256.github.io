@@ -11,7 +11,7 @@ this.mousePrevY=0;
 
 var curMenu=this;
 this.container.style.position="relative";
-this.container.style.width="200px";
+this.container.style.width="220px";
 this.container.style.height="140px";
 this.container.addEventListener("mousemove",function(event)
 	{
@@ -45,7 +45,7 @@ var rideItems=document.getElementById("items").getElementsByTagName("div");
 	for(i=0;i<rideItems.length;i++)
 	{
 	var listItem=document.createElement("span");
-	listItem.style.width="200px";
+	listItem.style.width="220px";
 	var itemName=document.createTextNode(rideItems[i].dataset.name);
 		if(rideItems[i].dataset.filename)
 		{
